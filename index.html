@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+  <title>Steady Christmas Delivery</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <!-- #stage to cała gra: do osadzenia na stronie wystarczy włożyć go w kontener o ustalonym rozmiarze -->
+  <main id="stage">
+    <canvas id="game"></canvas>
+
+    <!-- HUD rozgrywki -->
+    <div id="hud" class="hidden">
+      <div id="hud-hp" aria-label="Życie"></div>
+      <div id="hud-mid"><div id="hud-level"></div><div id="hud-time">0:00</div></div>
+      <div id="hud-right"><div id="hud-score">Punkty: 0</div><div id="hud-gifts">Prezenty: 0/0</div></div>
+    </div>
+    <div id="boss-bar" class="hidden"><span>The Big Deadline</span><div class="bar"><i id="boss-fill"></i></div></div>
+    <div id="toast" class="hidden"></div>
+
+    <!-- Sterowanie dotykowe (widoczne tylko na urządzeniach dotykowych) -->
+    <div id="touch" class="hidden">
+      <div id="joystick"><div id="stick"></div></div>
+      <button id="btn-attack" type="button">Atak</button>
+    </div>
+
+    <!-- EKRANY -->
+    <section id="scr-start" class="screen">
+      <h1>Steady<br>Christmas Delivery</h1>
+      <p class="lead">Świąteczna misja ratunkowa agencji Steady.</p>
+      <p>W Wigilię system dostaw prezentów przestał działać. Paczki leżą w lesie, biurze i na górze, a drogę zagradzają dziwne stworzenia.</p>
+      <button id="btn-start" class="btn">Rozpocznij grę</button>
+      <button id="btn-last-start" class="btn btn-secondary hidden">Ostatni wynik</button>
+    </section>
+
+    <section id="scr-story" class="screen hidden">
+      <h2>Wigilia w Steady</h2>
+      <p>System dostaw prezentów przestał działać, a paczki dla klientów rozsypały się po okolicy.</p>
+      <p>Na drodze pojawiły się bałwany, lodowe stworki, a nawet biurowe Bugi i Deadline'y.</p>
+      <p>Pracownicy Steady ruszają na ratunek. Przed Tobą trzy lokacje i jeden wielki finał!</p>
+      <button id="btn-story" class="btn">Wybierz bohatera</button>
+    </section>
+
+    <section id="scr-select" class="screen hidden">
+      <h2>Wybierz bohatera</h2>
+      <p class="hint">Wszyscy bohaterowie mają takie same statystyki. Różnią się tylko wyglądem.</p>
+      <div id="char-grid" role="group" aria-label="Wybór postaci"></div>
+      <div class="row">
+        <button id="btn-select-back" class="btn btn-secondary" type="button">Wstecz</button>
+        <button id="btn-confirm" class="btn" type="button">Graj jako <span id="selected-name"></span></button>
+      </div>
+      <button id="btn-last-select" class="btn btn-secondary hidden" type="button">Ostatni wynik</button>
+    </section>
+
+    <section id="scr-intro" class="screen hidden">
+      <p class="hint" id="intro-num"></p>
+      <h2 id="intro-name"></h2>
+      <p class="lead" id="intro-sub"></p>
+      <p id="intro-story"></p>
+      <p id="intro-goal" class="goal"></p>
+      <p class="hint">Ruch: WASD / strzałki / joystick · Atak: spacja / przycisk „Atak”</p>
+      <button id="btn-intro-go" class="btn">Zaczynamy!</button>
+    </section>
+
+    <section id="scr-levelend" class="screen hidden">
+      <h2 id="le-title"></h2>
+      <div id="le-summary"></div>
+      <p id="le-next"></p>
+      <button id="btn-next" class="btn">Kontynuuj</button>
+    </section>
+
+    <section id="scr-end" class="screen hidden">
+      <h2 id="end-title"></h2>
+      <p id="end-text"></p>
+      <div class="big-score"><small>Wynik końcowy</small><span id="end-score">0</span></div>
+      <div id="end-summary"></div>
+      <div class="row">
+        <button id="btn-again" class="btn" type="button">Zagraj ponownie</button>
+        <button id="btn-change" class="btn btn-secondary" type="button">Zmień postać</button>
+      </div>
+    </section>
+
+    <section id="scr-last" class="screen hidden">
+      <h2>Poprzednia rozgrywka</h2>
+      <div class="big-score"><small>Wynik</small><span id="last-score">0</span></div>
+      <div id="last-summary"></div>
+      <button id="btn-last-back" class="btn">Wróć</button>
+    </section>
+  </main>
+
+  <!-- Zwykłe skrypty (nie moduły), dzięki temu gra działa po dwukliku na index.html -->
+  <script src="js/config.js"></script>
+  <script src="js/characters.js"></script>
+  <script src="js/maps.js"></script>
+  <script src="js/sprites.js"></script>
+  <script src="js/effects.js"></script>
+  <script src="js/controls.js"></script>
+  <script src="js/scoring.js"></script>
+  <script src="js/player.js"></script>
+  <script src="js/enemies.js"></script>
+  <script src="js/boss.js"></script>
+  <script src="js/combat.js"></script>
+  <script src="js/ui.js"></script>
+  <script src="js/game.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>

@@ -1,0 +1,77 @@
+/* Steady Christmas Delivery – style. Paleta: noc #17203a, śnieg #eaf4fb, czerwień #c8283a, złoto #ffd34d, sosna #1f7a4a */
+* { box-sizing: border-box; }
+html, body { margin: 0; height: 100%; background: #000; }
+body {
+  color: #eaf4fb; font-family: "Trebuchet MS", "Segoe UI", sans-serif;
+  overflow: hidden; overscroll-behavior: none;            /* bez przypadkowego przewijania strony */
+  touch-action: none; user-select: none; -webkit-user-select: none; -webkit-tap-highlight-color: transparent;
+}
+/* Gra wypełnia kontener. Na stronie samodzielnej – całe okno (100dvh uwzględnia paski przeglądarki w telefonie) */
+#stage { position: relative; width: 100%; height: 100%; height: 100dvh; display: flex; align-items: center; justify-content: center; overflow: hidden; background: #000; }
+canvas { display: block; flex: none; image-rendering: pixelated; }
+.hidden { display: none !important; }
+button { font: inherit; }
+
+/* ---- HUD (z uwzględnieniem safe area w telefonach) ---- */
+#hud {
+  position: absolute; top: 0; left: 0; right: 0; display: flex; justify-content: space-between; align-items: flex-start; gap: 8px; pointer-events: none;
+  padding: calc(6px + env(safe-area-inset-top)) calc(8px + env(safe-area-inset-right)) 0 calc(8px + env(safe-area-inset-left));
+  font-size: clamp(11px, 2.6vw, 15px); font-weight: bold; text-shadow: 0 2px 0 #17203a;
+}
+#hud > div { background: rgba(23,32,58,.78); border: 2px solid #ffd34d; border-radius: 6px; padding: 3px 8px; }
+#hud-hp { font-size: clamp(16px, 4vw, 24px); letter-spacing: 1px; line-height: 1.1; }
+.heart-full { color: #e8394a; } .heart-empty { color: #3a4668; }
+#hud-mid { text-align: center; } #hud-level { color: #ffd34d; font-size: .85em; } #hud-time { font-family: "Courier New", monospace; font-size: 1.2em; }
+#hud-right { text-align: right; line-height: 1.35; }
+#boss-bar { position: absolute; left: 50%; transform: translateX(-50%); top: calc(64px + env(safe-area-inset-top)); width: min(70%, 420px); text-align: center; font-weight: bold; font-size: 13px; text-shadow: 0 2px 0 #17203a; pointer-events: none; }
+#boss-bar .bar { height: 12px; margin-top: 2px; background: #17203a; border: 2px solid #ffd34d; border-radius: 6px; overflow: hidden; }
+#boss-fill { display: block; height: 100%; width: 100%; background: linear-gradient(#ff6a6a, #c8283a); transition: width .15s; }
+#toast {
+  position: absolute; left: 50%; transform: translateX(-50%); bottom: calc(26% + env(safe-area-inset-bottom)); max-width: 90%;
+  background: #c8283a; border: 3px solid #ffd34d; border-radius: 6px; padding: 8px 16px; text-align: center; font-weight: bold; font-size: clamp(13px, 3vw, 18px); pointer-events: none;
+}
+
+/* ---- Sterowanie dotykowe ---- */
+#touch { position: absolute; left: 0; right: 0; bottom: 0; display: none; justify-content: space-between; align-items: flex-end; pointer-events: none;
+  padding: 0 calc(18px + env(safe-area-inset-right)) calc(18px + env(safe-area-inset-bottom)) calc(18px + env(safe-area-inset-left)); }
+body.touch #touch:not(.hidden) { display: flex; }
+#joystick { position: relative; width: 130px; height: 130px; border-radius: 50%; background: rgba(234,244,251,.16); border: 3px solid rgba(159,180,214,.8); touch-action: none; pointer-events: auto; }
+#stick { position: absolute; left: 38px; top: 38px; width: 54px; height: 54px; border-radius: 50%; background: rgba(234,244,251,.9); border: 3px solid #9fb4d6; }
+#btn-attack { width: 104px; height: 104px; border-radius: 50%; font-weight: bold; font-size: 20px; color: #fff; background: rgba(200,40,58,.88); border: 4px solid #ffd34d; touch-action: none; pointer-events: auto; }
+#btn-attack:active { background: #e8394a; }
+
+/* ---- Ekrany ---- */
+.screen {
+  position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: safe center; gap: 12px; text-align: center;
+  padding: calc(16px + env(safe-area-inset-top)) calc(16px + env(safe-area-inset-right)) calc(16px + env(safe-area-inset-bottom)) calc(16px + env(safe-area-inset-left));
+  background: radial-gradient(circle at 50% 0%, rgba(44,62,107,.96), rgba(10,14,30,.97) 75%); overflow-y: auto; touch-action: pan-y; -webkit-overflow-scrolling: touch;
+}
+.screen > * { flex: none; max-width: 620px; }
+.screen h1 { margin: 0; font-size: clamp(30px, 8vw, 58px); line-height: 1.04; color: #ffd34d; text-shadow: 3px 3px 0 #c8283a; }
+.screen h2 { margin: 0; font-size: clamp(24px, 6vw, 40px); color: #ffd34d; text-shadow: 3px 3px 0 #c8283a; }
+.screen p { margin: 0; font-size: clamp(14px, 2.8vw, 18px); line-height: 1.45; }
+.lead { color: #bfe8ff; font-weight: bold; } .hint { color: #9fb4d6; font-size: clamp(12px, 2.4vw, 14px) !important; } .goal { color: #8ee04a; font-weight: bold; }
+.row { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; }
+.btn { font-weight: bold; font-size: clamp(16px, 3.2vw, 20px); color: #fff; background: #1f7a4a; border: 3px solid #eaf4fb; border-radius: 6px; padding: 12px 24px; min-height: 48px; cursor: pointer; box-shadow: 0 4px 0 #0f4129; }
+.btn:hover { background: #28995d; } .btn:active { transform: translateY(3px); box-shadow: 0 1px 0 #0f4129; }
+.btn:focus-visible, .char:focus-visible { outline: 3px solid #ffd34d; outline-offset: 3px; }
+.btn-secondary { background: transparent; border-color: #9fb4d6; box-shadow: none; font-size: clamp(14px, 2.8vw, 17px); }
+.btn-secondary:hover { background: rgba(255,255,255,.12); }
+
+/* ---- Wybór postaci ---- */
+#char-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(86px, 1fr)); gap: 8px; width: min(100%, 620px); }
+.char { display: flex; flex-direction: column; align-items: center; gap: 2px; padding: 6px 4px 8px; color: #eaf4fb; font-weight: bold; background: rgba(234,244,251,.1); border: 3px solid #4a5a82; border-radius: 8px; cursor: pointer; min-height: 48px; }
+.char canvas { width: clamp(56px, 14vw, 80px); height: auto; image-rendering: pixelated; }
+.char:hover { border-color: #9fb4d6; }
+.char[aria-pressed="true"] { border-color: #ffd34d; background: rgba(200,40,58,.4); box-shadow: 0 0 0 2px #c8283a; }
+
+/* ---- Podsumowania ---- */
+.sum-grid { display: grid; grid-template-columns: 1fr auto; gap: 4px 18px; text-align: left; background: rgba(23,32,58,.8); border: 2px solid #4a5a82; border-radius: 8px; padding: 10px 14px; font-size: clamp(13px, 2.8vw, 16px); }
+.sum-grid b { color: #ffd34d; text-align: right; }
+.sum-table { width: 100%; border-collapse: collapse; font-size: clamp(11px, 2.4vw, 14px); margin-top: 8px; }
+.sum-table th, .sum-table td { padding: 4px 6px; border-bottom: 1px solid #34426b; } .sum-table td:first-child, .sum-table th:first-child { text-align: left; }
+.sum-break { margin-top: 8px; color: #9fb4d6; font-size: clamp(11px, 2.4vw, 13px); }
+.big-score { display: flex; flex-direction: column; align-items: center; } .big-score small { color: #9fb4d6; }
+.big-score span { font-size: clamp(40px, 11vw, 72px); font-weight: bold; color: #ffd34d; text-shadow: 3px 3px 0 #c8283a; line-height: 1; }
+#le-summary, #end-summary, #last-summary { width: 100%; }
+#le-next { color: #bfe8ff; }
