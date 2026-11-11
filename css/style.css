@@ -19,8 +19,9 @@ button { font: inherit; }
   font-size: clamp(11px, 2.6vw, 15px); font-weight: bold; text-shadow: 0 2px 0 #17203a;
 }
 #hud > div { background: rgba(23,32,58,.78); border: 2px solid #ffd34d; border-radius: 6px; padding: 3px 8px; }
-#hud-hp { font-size: clamp(16px, 4vw, 24px); letter-spacing: 1px; line-height: 1.1; }
-.heart-full { color: #e8394a; } .heart-empty { color: #3a4668; }
+#hud-hp { display: flex; gap: 3px; align-items: center; }
+.heart { width: clamp(16px, 4vw, 24px); height: auto; display: block; }
+.heart-full { fill: #e8394a; stroke: #17203a; stroke-width: .5; } .heart-empty { fill: #3a4668; stroke: #17203a; stroke-width: .5; }
 #hud-mid { text-align: center; } #hud-level { color: #ffd34d; font-size: .85em; } #hud-time { font-family: "Courier New", monospace; font-size: 1.2em; }
 #hud-right { text-align: right; line-height: 1.35; }
 #boss-bar { position: absolute; left: 50%; transform: translateX(-50%); top: calc(64px + env(safe-area-inset-top)); width: min(70%, 420px); text-align: center; font-weight: bold; font-size: 13px; text-shadow: 0 2px 0 #17203a; pointer-events: none; }

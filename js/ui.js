@@ -5,6 +5,10 @@
 const $ = id => document.getElementById(id);
 const formatTime = sec => Math.floor(sec / 60) + ':' + String(Math.floor(sec % 60)).padStart(2, '0'); // 75 -> 1:15
 
+// Serduszko jako mały SVG w stylu pixel art. Wcześniej był to znak tekstowy ♥, który telefony potrafią narysować
+// jako kolorowe emoji (ignorujące CSS), przez co "puste" serduszka wyglądały na pełne.
+const HEART_SVG = cls => `<svg class="heart ${cls}" viewBox="0 0 7 6" shape-rendering="crispEdges" aria-hidden="true"><path d="M1 0h2v1H1zM4 0h2v1H4zM0 1h7v2H0zM1 3h5v1H1zM2 4h3v1H2zM3 5h1v1H3z"/></svg>`;
+
 const UI = {
   screens: ['start', 'story', 'select', 'intro', 'levelend', 'end', 'last'],
   current: 'start', prev: 'start', selectedId: CHARACTERS[0].id, toastTimer: null, hudCache: {},
@@ -28,7 +32,8 @@ const UI = {
     const c = this.hudCache, set = (id, v) => { if (c[id] !== v) { c[id] = v; $(id).textContent = v; } };
     if (c.hp !== d.hp || c.maxHp !== d.maxHp) {
       c.hp = d.hp; c.maxHp = d.maxHp;
-      $('hud-hp').innerHTML = Array.from({ length: d.maxHp }, (_, i) => `<span class="${i < d.hp ? 'heart-full' : 'heart-empty'}">&#9829;</span>`).join('');
+      $('hud-hp').innerHTML = Array.from({ length: d.maxHp }, (_, i) => HEART_SVG(i < d.hp ? 'heart-full' : 'heart-empty')).join('');
+      $('hud-hp').setAttribute('aria-label', `Życie: ${d.hp} z ${d.maxHp}`);
     }
     set('hud-score', 'Punkty: ' + d.score); set('hud-gifts', `Prezenty: ${d.gifts}/${d.total}`);
     set('hud-time', formatTime(d.time)); set('hud-level', d.level);

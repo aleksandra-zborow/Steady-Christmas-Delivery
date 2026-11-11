@@ -11,7 +11,10 @@ class Boss {
     this.isBoss = true; this.typeId = 'boss'; this.cfg = { name: B.name, tier: 'boss' };
     this.x = tileX * TILE + TILE / 2; this.y = tileY * TILE + TILE / 2;
     this.w = B.hitbox; this.h = B.hitbox; this.radius = B.radius;
-    this.maxHp = B.hp; this.hp = B.hp;
+    // Gracz z joystickiem dostaje łagodniejszego bossa (mniej HP, dłuższe przerwy między atakami)
+    const touch = typeof Controls !== 'undefined' && Controls.touchMode;
+    this.maxHp = Math.round(B.hp * (touch ? BOSS_TOUCH.hpMul : 1)); this.hp = this.maxHp;
+    this.idleMul = touch ? BOSS_TOUCH.idleMul : 1;
     this.alive = true; this.dying = 0; this.scored = false;
     this.state = 'dormant'; this.timer = 0; this.teleTotal = 1; this.lastAttack = '';
     this.dir = { x: 0, y: 1 }; this.flash = 0; this.time = 0; this.stun = 0; this.explodeT = 0;
@@ -60,7 +63,7 @@ class Boss {
         break;
       }
       case 'recover':                                                                // chwila słabości – dobry moment na atak
-        this.timer -= dt; if (this.timer <= 0) { this.state = 'idle'; this.timer = BOSS.idleTime.min + Math.random() * (BOSS.idleTime.max - BOSS.idleTime.min); }
+        this.timer -= dt; if (this.timer <= 0) { this.state = 'idle'; this.timer = (BOSS.idleTime.min + Math.random() * (BOSS.idleTime.max - BOSS.idleTime.min)) * this.idleMul; }
         break;
       case 'tele_storm':
         this.timer -= dt;

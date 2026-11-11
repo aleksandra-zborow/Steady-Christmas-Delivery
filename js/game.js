@@ -67,7 +67,7 @@ class Game {
   startPlay() {            // po kliknięciu "Zaczynamy" na ekranie intro
     this.state = 'playing'; Controls.reset(); Controls.active = true;
     if (document.activeElement && document.activeElement.blur) document.activeElement.blur();
-    this.ui.hudShow(true); this.ui.setBoss(0, 1, false);
+    this.ui.hudShow(true); this.ui.setBoss(0, 1, false); this.refreshHud();
     this.ui.toast(`Poziom ${this.levelIndex + 1}: ${this.level.name}`);
   }
   nextLevel() {
@@ -90,6 +90,7 @@ class Game {
       Scoring.damage(this.run.levels[this.run.levels.length - 1], lost);
       this.effects.burst(p.x, p.y, ['#e8394a', '#ffffff'], 10, 110); this.effects.text(p.x, p.y - 16, `-${lost} HP`, '#ff8a8a');
       this.shake(4, 0.25);
+      this.refreshHud();                                           // serduszka od razu, także gdy to śmiertelne trafienie
       if (p.hp <= 0) { this.effects.burst(p.x, p.y, ['#ffffff', '#e8394a'], 20, 140); this.later(0.9, () => this.finishRun(false)); this.ui.toast('Ups… Ekipa Steady musi spróbować ponownie.'); }
     }
     return lost;
@@ -154,6 +155,12 @@ class Game {
     this.collect(p);
     this.effects.update(dt); this.shakeT = Math.max(0, this.shakeT - dt);
     this.snapCam();
+    this.refreshHud();
+  }
+
+  // Wysyła aktualny stan do HUD. Wołane co klatkę ORAZ natychmiast po każdej zmianie HP (obrażenia, leczenie, śmierć)
+  refreshHud() {
+    const p = this.player;
     this.ui.updateHud({ hp: p.hp, maxHp: p.maxHp, score: Scoring.liveTotal(this.run), gifts: this.collected, total: this.totalGifts, time: this.elapsed, level: `Poziom ${this.levelIndex + 1}/${LEVELS.length}` });
   }
 
@@ -168,7 +175,7 @@ class Game {
     }
     for (const h of this.heals) {
       if (h.used || Math.hypot(h.x - p.x, h.y - p.y) > 20 || p.hp >= p.maxHp) continue;
-      h.used = true; p.heal(CONFIG.healAmount);
+      h.used = true; p.heal(CONFIG.healAmount); this.refreshHud();
       this.effects.burst(h.x, h.y, ['#8ee04a', '#ffffff'], 8, 70); this.effects.text(h.x, h.y - 14, '+1 HP', '#8ee04a');
     }
     if (Math.hypot(this.exit.x - p.x, this.exit.y - p.y) < CONFIG.exitRadius) {

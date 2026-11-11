@@ -47,3 +47,8 @@ const BOSS = {
   storm:  { telegraph: 0.8, count: 8, enragedCount: 12, speed: 105, damage: 1 },   // pierścień papierów
   slam:   { telegraph: 1.0, radius: 92, damage: 1 },                               // uderzenie zegara w ziemię
 };
+// Łagodniejszy boss, gdy gracz steruje joystickiem (desktop i klawiatura: bez zmian)
+const BOSS_TOUCH = {
+  hpMul: 0.8,   // 36 HP -> 29 HP (około -19%)
+  idleMul: 1.3, // przerwy między atakami +30%: 1.1-1.8 s -> 1.43-2.34 s
+};

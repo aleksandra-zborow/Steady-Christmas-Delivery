@@ -7,6 +7,7 @@ const Controls = {
   keys: {},            // które klawisze są teraz wciśnięte
   joy: { x: 0, y: 0 }, // wychylenie joysticka (-1..1)
   attackQueued: false,
+  touchMode: false,    // true, gdy ostatnio sterowano dotykiem (joystick / przycisk ataku); klawiatura przełącza z powrotem na false
   active: false,       // sterowanie działa tylko w trakcie rozgrywki (żeby nie blokować klawiszy w menu)
 
   // Kierunek ruchu jako wektor {x,y} o długości max 1
@@ -27,6 +28,7 @@ const Controls = {
   init() {
     window.addEventListener('keydown', e => {
       if (!this.active) return;
+      this.touchMode = false;
       if (['Space', 'ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(e.code)) e.preventDefault(); // bez przewijania strony
       if (e.code === 'Space' && !e.repeat) this.attackQueued = true;
       this.keys[e.code] = true;
@@ -46,12 +48,12 @@ const Controls = {
       this.joy = len < 0.2 ? { x: 0, y: 0 } : { x: dx, y: dy }; // mała martwa strefa
     };
     const releaseStick = () => { this.joy = { x: 0, y: 0 }; stick.style.transform = ''; };
-    joy.addEventListener('pointerdown', e => { joy.setPointerCapture(e.pointerId); setStick(e); });
+    joy.addEventListener('pointerdown', e => { this.touchMode = true; joy.setPointerCapture(e.pointerId); setStick(e); });
     joy.addEventListener('pointermove', e => { if (joy.hasPointerCapture(e.pointerId)) setStick(e); });
     joy.addEventListener('pointerup', releaseStick);
     joy.addEventListener('pointercancel', releaseStick);
 
     // --- Przycisk ataku ---
-    document.getElementById('btn-attack').addEventListener('pointerdown', e => { e.preventDefault(); if (this.active) this.attackQueued = true; });
+    document.getElementById('btn-attack').addEventListener('pointerdown', e => { e.preventDefault(); this.touchMode = true; if (this.active) this.attackQueued = true; });
   },
 };
